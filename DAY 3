@@ -1,0 +1,49 @@
+Build Docker Images
+
+To list
+docker images
+
+To pull a popular image like
+docker pull mysql
+
+Create your own app
+Make a small Python file:
+echo 'print("Hello DevOps")' > app.py
+
+Create a Dockerfile
+ A Dockerfile is the recipe to build images.
+ Create a file named Dockerfile (no extension):
+nano Dockerfile
+
+Paste this:
+
+FROM python:3.9
+COPY app.py /
+CMD ["python", "app.py"]
+--------------------------------
+FROM → base image (Python 3.9 here)
+COPY → copy your code into image
+CMD → command to run
+
+Save and exit
+
+Build your image
+docker build -t myapp .
+
+-t myapp → gives your image a name (myapp)
+. → means “look in current directory for Dockerfile”
+
+
+Run your image
+docker run myapp
+You should see:
+  Hello DevOps
+
+
+✅ Is this always the process to build an image?
+
+Yes, always! 🎯
+Whenever you want to create your own custom image, you:
+  Write a Dockerfile (the recipe).
+  Run docker build (cook it into an image).
+  Run docker run (serve it as a container).
