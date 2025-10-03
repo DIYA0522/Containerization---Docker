@@ -1,0 +1,56 @@
+Working with Containers
+
+1. Start / Stop / Remove containers
+
+Run an Ubuntu container:
+  docker run -it ubuntu bash
+Exit with exit → container is stopped.
+
+Start a stopped container:
+  docker start -ai <container_id>
+(-a = attach, -i = interactive)
+
+Stop a running container:
+docker stop <container_id>
+
+Remove a container:
+docker rm <container_id>
+
+👉 Practice: run docker ps -a after each step to see the status.
+
+2. Detached Mode
+
+Run Nginx in the background:
+  docker run -d --name mynginx -p 8080:80 nginx
+(-d = detached, so it runs in background; -p maps container port 80 → host port 8080).
+  docker run -d --name mynginx -p 8080:80 nginx
+
+    🔹 Breakdown:
+-d → detached mode (background)
+--name mynginx → name your container mynginx
+-p 8080:80 → map host port 8080 → container port 80
+nginx → image name
+
+Check running containers:
+  docker ps
+
+👉 Open http://<EC2-public-IP>:8080 in browser (or curl localhost:8080).
+
+Logs & Exec
+
+View logs of a container:
+  docker logs mynginx
+
+Execute a command inside a running container:
+  docker exec -it mynginx bash
+
+Now you’re inside the Nginx container → check files:
+ls /usr/share/nginx/html
+
+Exit with exit.
+
+
+
+
+
+
