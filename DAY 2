@@ -23,12 +23,11 @@ docker rm <container_id>
 Run Nginx in the background:
   docker run -d --name mynginx -p 8080:80 nginx
 (-d = detached, so it runs in background; -p maps container port 80 → host port 8080).
-  docker run -d --name mynginx -p 8080:80 nginx
 
     🔹 Breakdown:
 -d → detached mode (background)
 --name mynginx → name your container mynginx
--p 8080:80 → map host port 8080 → container port 80
+-p 8080:80 → map host port 8080 → container port 80                   ---Exposing ports (you fixed the syntax: -p 8080:80)
 nginx → image name
 
 Check running containers:
@@ -48,6 +47,21 @@ Now you’re inside the Nginx container → check files:
 ls /usr/share/nginx/html
 
 Exit with exit.
+
+If container in status created-- it means its stuck it got never started in the first place, so do docker start and then docker stop, 
+then rm, to remove if reqd
+
+MEMORY RUN --> Commands to match:
+
+Create & Run → docker run
+List running → docker ps
+List all (incl. stopped) → docker ps -a
+Stop → docker stop <container_id>
+Start again → docker start <container_id>
+Remove → docker rm <container_id>
+Remove image → docker rmi <image_id>
+
+
 
 
 
