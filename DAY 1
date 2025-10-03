@@ -15,7 +15,7 @@ docker --version
 Run Your First Container
 
 Test Docker installation:
-docker run hello-world
+docker run hello-world                             --Prints a message, exits
 This pulls a small image and prints a welcome message.
 
 See Containers
@@ -28,10 +28,49 @@ Image = blueprint/template (read-only).
 Container = running instance of an image.
 
 docker images    # list images
-docker run -it ubuntu bash   # run Ubuntu in interactive shell
+docker run -it ubuntu bash   # run Ubuntu in interactive shell            --Starts Ubuntu shell, Works inside a container
 
 Inside Ubuntu, run:
 ls
 pwd
 exit   # to quit container
+
+Add your user to the Docker group (recommended)
+   sudo usermod -aG docker $USER
+
+Log out + log in or 
+Refresh group membership without logging out  
+  newgrp docker
+
+
+
+-----------------------
+Use 
+docker run -it ubuntu bash 
+whenever you need a playground Ubuntu environment (to learn, debug, or test things) without affecting your real system.
+
+docker run → start a new container.
+
+-it → two flags combined:
+ -i = interactive (keeps STDIN open so you can type commands)
+ -t = allocate a terminal (gives you a shell-like experience)
+ubuntu → the image to use (here, official Ubuntu OS image).
+bash → the command to run inside the container (Ubuntu’s shell).
+
+👉 This starts a temporary Ubuntu container and drops you directly inside a bash shell.
+
+List all images you have:
+   docker images
+
+Remove a container (after it’s stopped):
+   docker rm <container_id>                  --take container_id from docker ps -a 
+
+Remove an image (cleanup):
+   docker rmi <image_id>                     --take image_id from docker images
+
+Check Docker system info:
+   docker info
+
+If you want to clean everything unused
+   docker system prune
 
