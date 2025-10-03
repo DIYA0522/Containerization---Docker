@@ -1,0 +1,37 @@
+Docker = the most popular containerization tool, used in DevOps to build, ship, and run applications consistently across environments.
+
+Docker is a tool/platform that makes containerization easy.
+  It lets you package an application and everything it needs (dependencies, libraries, configs) into a container.
+  you can run that container anywhere — your laptop, a server, or the cloud — and it will behave the same way.
+
+Install Docker
+
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker                       --telling systemd (command to manage services on Linux) to start Docker automatically on system boot.
+docker --version
+
+Run Your First Container
+
+Test Docker installation:
+docker run hello-world
+This pulls a small image and prints a welcome message.
+
+See Containers
+docker ps        # running containers
+docker ps -a     # all containers (including stopped)
+
+Containers vs Images
+
+Image = blueprint/template (read-only).
+Container = running instance of an image.
+
+docker images    # list images
+docker run -it ubuntu bash   # run Ubuntu in interactive shell
+
+Inside Ubuntu, run:
+ls
+pwd
+exit   # to quit container
+
