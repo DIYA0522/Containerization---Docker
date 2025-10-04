@@ -1,0 +1,41 @@
+Volumes & Data Persistence
+
+Containers are ephemeral: once deleted, their data is gone.
+Volumes → permanent storage managed by Docker
+Bind mounts → map a host folder into the container
+
+Volumes let you store data outside the container so it survives container deletion.
+
+Run MySQL with a volume
+
+docker run -d \
+  --name mymysql \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v mysql_data:/var/lib/mysql \
+  mysql
+
+
+Breakdown:
+
+-d → run in background
+--name mymysql → container name
+-e MYSQL_ROOT_PASSWORD=root → environment variable for MySQL root password
+-v mysql_data:/var/lib/mysql → volume called mysql_data storing database files
+
+Inspect volumes
+docker volume ls
+
+docker volume inspect mysql_data
+→ Shows path on host where Docker stores it.
+
+Bind mount example (host folder → container)
+mkdir ~/docker-data
+echo "Hello from host" > ~/docker-data/test.txt
+docker run -it -v ~/docker-data:/data ubuntu bash
+
+Inside the container:
+
+ls /data
+cat /data/test.txt
+
+→ You see the file from host inside the container
