@@ -29,9 +29,16 @@ docker volume inspect mysql_data
 → Shows path on host where Docker stores it.
 
 Bind mount example (host folder → container)
+
 mkdir ~/docker-data
 echo "Hello from host" > ~/docker-data/test.txt
 docker run -it -v ~/docker-data:/data ubuntu bash
+
+      Note: Its like “Take the folder on my host machine (~/docker-data) and connect it into the container at /data.”
+      So:
+         Left side (~/docker-data) = folder on your EC2/host
+         Right side (/data) = folder inside container
+         They become linked. Anything you put in one will show in the other.
 
 Inside the container:
 
@@ -39,3 +46,120 @@ ls /data
 cat /data/test.txt
 
 → You see the file from host inside the container
+
+  Now inside this container if you create a new file in /data, this will be visible in host side folder as well.
+
+It’s like sharing a folder between your computer and the container.
+Any change made to this file, will be synched by both container and host
+
+Host is computer / server / the place the docker is running, here the ec2 instance
+Container = an isolated mini-computer (like a box) created by Docker on that host.
+👉 When you run docker run ..., you are creating a container inside the EC2 host.
+
+Host folder = a normal folder on your EC2 instance (like /home/ec2-user/docker-data).
+Container folder = a folder inside the container’s filesystem.
+
+docker run -it -v ~/docker-data:/data ubuntu bash 
+or 
+docker run -it --name hostbind -v ~/docker-data:/data ubuntu bash 
+It means:
+👉 “Run a container, but also mount (share) the host folder ~/docker-data into the container at /data.”
+
+docker run
+👉 Start a new container.
+
+-it
+-i = interactive (keeps STDIN open, so you can type inside the container).
+-t = allocate a terminal (so you get a shell-like experience).
+👉 Together: “let me go inside the container and type commands.”
+
+--name hostbind
+name given for the container 
+
+-v ~/docker-data:/data
+👉 This is the bind mount.
+~/docker-data → folder on host (your EC2).
+/data → folder inside the container.
+👉 It means: “share this folder between host and container.”
+
+ubuntu
+👉 The image name. We are using the official ubuntu image
+
+bash
+👉 The command to run inside the container.
+Here, it starts a Bash shell, so you can type Linux commands inside.
+
+
+The data inside a container will be synched outside container in the folder in host.
+so even if container removed data is present in host, docker-data untouched.
+The once exited container, will be in stopped state.
+To see the files or data related to it:
+
+-If the container was created with a named volume or bind mount, the data is outside the container, so even if you rm the container, the data still exists.
+-If no volume/mount was used → the data lives inside the container filesystem, so once you docker rm it → files are gone.
+if its only in exited status not yet removed,
+you can 
+Option 1: Restart and attach again
+          docker start -ai <container_name_or_id>
+
+Option 2: Start and exec a shell
+          docker start <container_name_or_id>
+          docker exec -it <container_name_or_id> bash
+
+
+named volumes and bind mounts are similar in purpose (both give persistence & data sharing), but they differ in who manages the storage and where the data lives
+
+Bind Mount
+
+You specify an exact host path.
+Example:
+docker run -it -v ~/docker-data:/data --name bind_test ubuntu bash
+----------------------------------------------------------------------------------------------
+Named Volume (Docker-managed)
+
+mydata = named volume created by Docker.
+docker volume create mydata
+
+You don’t specify host path; Docker manages it internally (usually under /var/lib/docker/volumes/...).
+Example:
+docker run -it -v mydata:/data --name vol_writer ubuntu bash
+
+Inside vol_writer container:
+
+# create a file in the mounted volume
+echo "persistent data written at $(date)" > /data/persistent.txt
+
+# verify
+ls -l /data
+cat /data/persistent.txt
+
+exit
+
+If you remove the container (docker rm vol_writer), the volume mydata still exists.
+Another container can use it:
+docker run -it -v mydata:/data --name vol_reader ubuntu bash
+
+Now both containers share the same storage.
+
+Inspect the volume (optional)
+docker volume ls
+docker volume inspect mydata
+
+docker volume create mydata
+docker run -it -v mydata:/data --name vol_writer ubuntu bash
+docker rm vol_writer
+docker run -it -v mydata:/data --name vol_reader ubuntu bash    --Now both containers share the same storage.
+
+You can see the data in host in named volume mydata
+How to see the data?
+
+From the host (EC2)
+
+sudo ls /var/lib/docker/volumes/mydata/_data
+sudo cat /var/lib/docker/volumes/mydata/_data/test.txt
+
+NOTE:
+Only if you do docker volume rm sharedvol, then the data is deleted permanently.
+docker rm <container> never deletes named volume data.
+
+
