@@ -162,4 +162,14 @@ NOTE:
 Only if you do docker volume rm sharedvol, then the data is deleted permanently.
 docker rm <container> never deletes named volume data.
 
+-----------------------------------------------------------------------------
+
+✅ In DevOps context:
+
+Use Bind Mounts for development (edit code on host, run container instantly).
+Use Named Volumes for production data (databases, persistent app storage) — because they’re portable, less error-prone, and managed by Docker.
+
+So the answer:
+👉 Named volumes are more portable, because Docker manages their storage internally and abstracts away the host file paths.
+
 
