@@ -74,3 +74,20 @@ I can explain when to NOT use -d — like when you actually want to watch logs i
 docker-compose up -d
 Without -d, Compose attaches logs from all services to your terminal.
 With -d, Compose runs all services in the background and you can keep using the terminal.
+
+
+Q> In this Compose file, if you run docker-compose up -d, how many containers will be created and on what network?
+
+✅ Your Answer:
+
+2 containers — Nginx and MySQL.
+Network not defined → Docker creates a default network.
+
+💯 Absolutely right.
+
+Docker Compose will automatically:
+Create one network (named after your folder, e.g. myproject_default).
+Run two containers, one for each service (web, db).
+Attach both containers to that same network so they can communicate by name.
+
+
