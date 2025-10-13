@@ -1,0 +1,70 @@
+🧱 What is Docker Compose?
+
+Docker Compose is a tool that helps you define and run multi-container applications using a single YAML file (docker-compose.yml).
+
+✅ Instead of running many docker run commands manually,
+you can describe everything (images, ports, networks, environment variables, etc.) in one file, and just run:
+
+docker-compose up -d
+
+Install
+sudo apt install docker-compose -y
+docker-compose --version
+
+Create
+mkdir ~/compose-demo
+cd ~/compose-demo
+Then create the YAML file:
+
+nano docker-compose.yml
+--------------
+version: "3"
+
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+---------------
+Takeaway:
+web is for serving HTTP traffic externally.
+db is internal, and other services (like web) can communicate with it inside the Compose network.
+
+Run your stack
+docker-compose up -d
+
+Check running services:
+docker-compose ps
+
+✅ You’ll see 2 containers:
+
+compose-demo_web_1 (nginx)
+compose-demo_db_1 (mysql)
+
+Test
+
+In your browser, go to:
+http://<your-ec2-public-ip>:8080
+
+Scale your service
+
+Want 3 Nginx containers instead of 1?
+
+Run:
+docker-compose up --scale web=3 -d
+
+Now check again:
+docker-compose ps
+
+Stop and remove everything
+
+To stop containers:
+docker-compose down
+
+It removes all containers, but your data persists if volumes are defined.
+
