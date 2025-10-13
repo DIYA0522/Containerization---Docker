@@ -83,7 +83,6 @@ help: \h
 ✅ Result:
 You’re using the Ubuntu container as a client to talk to the MySQL server inside another container — both connected through the same Docker network.
 
-
 Practice: connect Ubuntu container to MySQL using container name. STEPS ABOVE
 
 
