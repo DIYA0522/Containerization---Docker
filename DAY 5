@@ -18,6 +18,12 @@ Test connectivity (inside Ubuntu container)
 
 (password = root)
 👉 This works because containers in the same custom network can reach each other by container name.
+
+Each custom Docker network provides an internal DNS that resolves container names → IPs.
+Docker’s internal DNS = system that lets containers talk to each other using names (like db, web) instead of remembering IP addresses.
+
+DNS = Domain Name System
+It’s what helps turn names (like google.com) into IP addresses (like 142.250.183.110) — because computers talk using IPs, but humans remember names.
 -----------------------------
            Start the database container
 
@@ -30,12 +36,13 @@ network mynet
        attach the container in user-defined network mynet 
        Containers in the same network can talk to each other by name
 -e MYSQL_ROOT_PASSWORD=root
-      -e = set an environment variable inside the container.
+      -e = set an environment variable inside the container that MySQL uses to initialize the root user when it first starts.
       Here, MySQL requires a root password at startup. We’re passing MYSQL_ROOT_PASSWORD=root.
       Without this, MySQL will refuse to start.
       Inside the container, the MySQL service reads this env var and sets the root password.
 mysql
 This is the image (from Docker Hub). It contains MySQL preinstalled. (starts a MySQL server)
+mysql image automatically runs the MySQL service when the container starts.
 
 So now, there’s a MySQL server running inside that container, accessible to others on mynet.
 
