@@ -19,6 +19,8 @@ Test connectivity (inside Ubuntu container)
 (password = root)
 👉 This works because containers in the same custom network can reach each other by container name.
 -----------------------------
+           Start the database container
+
 Command explanation
  docker run -d --name db --network mynet -e MYSQL_ROOT_PASSWORD=root mysql
 
@@ -68,10 +70,14 @@ mysql -h db -u root -p
 When asked, type:
 root
 
+exit: \q
+help: \h
+
 ✅ Result:
 You’re using the Ubuntu container as a client to talk to the MySQL server inside another container — both connected through the same Docker network.
 
 
+Practice: connect Ubuntu container to MySQL using container name. STEPS ABOVE
 
 
  
