@@ -1,0 +1,233 @@
+💡Summary:
+Build → Run → Test → Tag → Push → Verify ✅
+
+Day 7 – Docker Registry & Mini Project
+
+We’ll do this in 2 parts:
+  Push image to Docker Hub
+  Build a mini project using Compose (optional bonus)
+
+🔹 Part 1: Push your image to Docker Hub
+🧩 Step 1: Login to Docker Hub
+docker login
+       It will ask for your Docker Hub username and password.
+
+🧩 Step 2: Tag your image
+Let’s assume you previously built an image:
+docker build -t myapp .
+
+Now, tag it so Docker knows where to push:
+docker tag myapp <your-dockerhub-username>/myapp:v1
+docker tag myapp diyaphilip2025/myapp:v1
+
+🧩 Step 3: Push the image
+docker push <your-dockerhub-username>/myapp:v1
+docker push diyaphilip2025/myapp:v1
+
+This uploads your image layers to your Docker Hub repository.
+
+You can verify by visiting your profile at
+🔗 https://hub.docker.com/repository/docker/<your-dockerhub-username>/myapp
+
+🧩 Step 4: Test pulling it back
+You can now pull your image from any system:
+docker pull <your-dockerhub-username>/myapp:v1
+docker run <your-dockerhub-username>/myapp:v1
+
+
+🎉 Congratulations — you’ve officially published your first Docker image to the cloud!
+
+-----------------------------------------------------------------------------------------------------------------
+How to Build a Docker Image?
+
+Step 1: Create your app files
+mkdir myapp
+cd myapp
+
+create a simple HTML file:
+echo "<h1>Hello from Docker!</h1>" > index.html
+
+Step 2: Create a Dockerfile
+This file tells Docker how to build your image — it’s like a recipe.
+
+nano Dockerfile
+
+Paste it.
+
+# Step 1: Use an existing base image
+FROM nginx:latest
+
+# Step 2: Copy our HTML file into the nginx web folder
+COPY index.html /usr/share/nginx/html/index.html
+
+# Step 3: Expose port 80 (where nginx serves)
+EXPOSE 80
+
+🧩 Step 3: Build the image
+
+docker build -t myapp:latest .
+
+💡 Explanation:
+docker build → tells Docker to build an image
+-t myapp:latest → gives it a name (myapp) and tag (latest)
+. → means “look for the Dockerfile in the current folder”
+
+🧩 Step 4: Verify your image
+docker images
+
+myapp will appear
+
+🧩 Step 5: Run a container from that image
+docker run -d -p 8080:80 myapp
+
+Now open your browser →
+👉 http://localhost:8080
+You’ll see: “Hello from Docker!”
+
+---------------------------------------------------------------------------------
+So —
+✅ Local Docker → http://localhost:8080
+🌐 Remote VM → http://<public-ip>:8080
+
+-------------------------------------------------------------------------------
+
+Part 2 :
+
+Mini Project Overview
+
+You’ll build a Python Flask web app that connects to a MySQL database, and it will be served through Nginx, all orchestrated via Docker Compose.
+Finally, you’ll push the Flask app image to Docker Hub.
+
+⚙️ Step 1: Project Structure
+
+Create a folder:
+mkdir docker-mini-project && cd docker-mini-project
+
+Inside it, create this structure:
+
+docker-mini-project/
+├── app/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── nginx/
+│   └── default.conf
+└── docker-compose.yml
+
+🧠 Step 2: Flask App
+
+app/app.py
+----------
+from flask import Flask
+import mysql.connector
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello from Flask App running with Docker Compose!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+---------------------
+app/requirements.txt
+-------------------
+flask
+mysql-connector-python
+--------------------
+🐳 Step 3: Dockerfile for Flask App
+
+app/Dockerfile
+---------------------
+FROM python:3.9
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+------------------------
+🌐 Step 4: Nginx Configuration
+
+nginx/default.conf
+-----------------
+server {
+    listen 80;
+    location / {
+        proxy_pass http://web:5000;
+    }
+}
+
+---------------------
+This forwards all incoming HTTP requests to the Flask app container (web).
+
+⚙️ Step 5: Docker Compose File
+
+docker-compose.yml
+---------------------------
+version: "3"
+
+services:
+  web:
+    build: ./app
+    container_name: flask_app
+    networks:
+      - appnet
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    container_name: mysql_db
+    networks:
+      - appnet
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    container_name: nginx_proxy
+    networks:
+      - appnet
+
+networks:
+  appnet:
+-----------------------------
+▶️ Step 6: Run the Full Stack
+docker-compose up -d
+
+
+Now open:
+👉 http://localhost:8080
+
+(or http://<your-public-IP>:8080 on EC2)
+
+You should see:
+
+“Hello from Flask App running with Docker Compose!”
+
+☁️ Step 7: Push Flask Image to Docker Hub
+
+Tag and push your Flask image:
+
+docker tag docker-mini-project-web <your-dockerhub-username>/flask-app:v1
+docker push <your-dockerhub-username>/flask-app:v1
+
+
+(Replace <your-dockerhub-username> with yours.)
+
+✅ Step 8: Verify
+
+Visit your Docker Hub account → Repositories →
+You’ll see flask-app:v1.
+
+
+
+
+
+
+
+
