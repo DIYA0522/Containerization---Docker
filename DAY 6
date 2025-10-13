@@ -75,7 +75,7 @@ docker-compose up -d
 Without -d, Compose attaches logs from all services to your terminal.
 With -d, Compose runs all services in the background and you can keep using the terminal.
 
-
+--------------------------------------------------------------
 Q> In this Compose file, if you run docker-compose up -d, how many containers will be created and on what network?
 
 ✅ Your Answer:
@@ -89,5 +89,33 @@ Docker Compose will automatically:
 Create one network (named after your folder, e.g. myproject_default).
 Run two containers, one for each service (web, db).
 Attach both containers to that same network so they can communicate by name.
+
+
+Q. Why do we write ports: - "8080:80" under web but not for db?
+
+We write ports: - "8080:80" under web because:
+
+Web (Nginx) serves HTTP traffic externally — we want to access it from our browser or host.
+Port mapping connects host port 8080 → container port 80, so when we open http://<EC2-IP>:8080, traffic goes to Nginx inside the container.
+Database (MySQL) is internal-only — it doesn’t need to be exposed to the internet. Other containers (like web) can access it internally over the Docker network using its service name db.
+
+Q. True or False:
+Containers from the same Docker Compose project can communicate using their service names (e.g., db, web) without any extra configuration.
+
+When Docker Compose runs, it automatically creates a default bridge network for that project.
+All containers (services) in the Compose file are attached to that same network.
+Because of this, they can communicate with each other using their service names as hostnames — e.g. mysql -h db -u root -p.
+
+Q: If you remove the stack using docker-compose down, what happens to the network and volumes by default?
+
+🟡 By default:
+
+The containers are stopped and removed ✅
+The default network created by Compose is also removed ✅
+Volumes remain (persist) ❗
+
+Q. You want to run 3 instances of your web service.
+What command would you use?
+docker-compose up --scale web=3 -d
 
 
