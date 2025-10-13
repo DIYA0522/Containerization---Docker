@@ -225,6 +225,43 @@ Visit your Docker Hub account → Repositories →
 You’ll see flask-app:v1.
 
 
+🧩 Problem
+Bind for 0.0.0.0:8080 failed: port is already allocated
+
+
+Meaning:
+Port 8080 on your EC2 instance is already being used — likely by a previously running container
+
+Option 1 — Stop existing containers
+
+List all containers:
+docker ps -a
+
+
+Then stop and remove old ones that are using port 8080:
+
+docker stop <container_id>
+docker rm <container_id>
+
+
+Now retry:
+docker-compose up -d
+
+Option 2 — Change the port
+
+If you want to keep the old container running, just edit your docker-compose.yml file:
+
+ports:
+  - "8081:80"
+
+
+Then rebuild and run:
+docker-compose up -d
+
+Now open your app at:
+👉 http://<your-ec2-public-ip>:8081
+
+
 
 
 
