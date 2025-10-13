@@ -68,3 +68,9 @@ docker-compose down
 
 It removes all containers, but your data persists if volumes are defined.
 
+Note: 
+I can explain when to NOT use -d — like when you actually want to watch logs interactively.
+       In Compose:
+docker-compose up -d
+Without -d, Compose attaches logs from all services to your terminal.
+With -d, Compose runs all services in the background and you can keep using the terminal.
