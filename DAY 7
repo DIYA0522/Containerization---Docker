@@ -265,6 +265,30 @@ Now open your app at:
 
 
 
+---------------------------------------------
+You basically created a 3-layer app like this 👇
+
+Browser → Nginx → Flask App → MySQL
+And you used Docker Compose to make all 3 run together!
+
+🧩 1️⃣ app.py
+This is your Python backend app (Flask).
+It’s the actual code that runs inside the app container.
+✅ Purpose:
+Defines the web app logic — what the app shows when you open it in browser.
+🧩 2️⃣ Dockerfile
+This tells Docker how to build an image for your Flask app.
+So this builds your Flask app image that Docker can run.
+🧩 3️⃣ docker-compose.yml
+This is the master file that brings everything together.
+🧩 4️⃣ nginx.conf (optional if you added it)
+This tells Nginx how to forward requests to Flask.
+
+
+
+
+
+
 
 
 
